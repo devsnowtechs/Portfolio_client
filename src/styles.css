@@ -3135,6 +3135,12 @@ body:has(dialog[open]) {
 .profile-section {
   margin: 2.4rem 0;
 }
+/* The header is sticky, so an in-page jump (the top-bar links and the footer links) must leave room
+   for it; without this the heading of the target section scrolls underneath the header. */
+.profile-hero,
+.profile-section {
+  scroll-margin-top: 6rem;
+}
 .record-list {
   display: grid;
   gap: 0.9rem;

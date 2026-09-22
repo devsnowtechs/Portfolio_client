@@ -23,55 +23,71 @@ import { Page, Project } from "../core/models";
 })
 export class Icon {
   @Input() name = "code";
+  // Icon names arrive from two sources: the fixed labels the shared design system uses and the
+  // free-form text an administrator types for skills, timeline entries and the industry list. The
+  // lookup is case-insensitive and separator-insensitive ("AI & ML" and "e-Commerce" are matched
+  // too), because the industry label "ERPs" used to resolve to fa-erps, a glyph Font Awesome does not
+  // ship, so the icon silently disappeared from the page. A name that is not mapped is passed through
+  // so a real Font Awesome name keeps working.
+  private static readonly icons: Record<string, string> = {
+    home: "house",
+    dashboard: "house",
+    projects: "table-cells-large",
+    layers: "layer-group",
+    timeline: "user",
+    skills: "layer-group",
+    resume: "file-lines",
+    media: "image",
+    demo: "video",
+    contact: "message",
+    custom: "code",
+    sales: "chart-column",
+    settings: "gear",
+    notifications: "bell",
+    security: "shield-halved",
+    audit: "file-lines",
+    analytics: "chart-column",
+    download: "download",
+    edit: "pen",
+    delete: "trash-can",
+    close: "xmark",
+    check: "circle-check",
+    arrow: "arrow-up-right-from-square",
+    menu: "bars",
+    user: "user",
+    cloud: "cloud",
+    education: "graduation-cap",
+    health: "heart-pulse",
+    investment: "chart-line",
+    fintech: "building-columns",
+    // Enterprise resource planning and entity relationship diagrams share the systems glyph.
+    erps: "diagram-project",
+    erp: "diagram-project",
+    erd: "diagram-project",
+    insurance: "shield-halved",
+    enterprise: "building",
+    "e-commerce": "cart-shopping",
+    ecommerce: "cart-shopping",
+    "ai-ml": "brain",
+    ai: "brain",
+    search: "magnifying-glass",
+    eye: "eye",
+    plus: "plus",
+    logout: "right-from-bracket",
+    mail: "envelope",
+    clock: "clock",
+    calendar: "calendar-days",
+    upload: "cloud-arrow-up",
+    lock: "lock",
+    warning: "triangle-exclamation",
+  };
   get resolved() {
-    return (
-      (
-        {
-          home: "house",
-          dashboard: "house",
-          projects: "table-cells-large",
-          layers: "layer-group",
-          timeline: "user",
-          skills: "layer-group",
-          resume: "file-lines",
-          media: "image",
-          demo: "video",
-          contact: "message",
-          custom: "code",
-          sales: "chart-column",
-          settings: "gear",
-          notifications: "bell",
-          security: "shield-halved",
-          audit: "file-lines",
-          analytics: "chart-column",
-          download: "download",
-          edit: "pen",
-          delete: "trash-can",
-          close: "xmark",
-          check: "circle-check",
-          arrow: "arrow-up-right-from-square",
-          menu: "bars",
-          user: "user",
-          cloud: "cloud",
-          education: "graduation-cap",
-          health: "heart-pulse",
-          investment: "chart-line",
-          fintech: "building-columns",
-          erd: "file-lines",
-          insurance: "shield-halved",
-          search: "magnifying-glass",
-          eye: "eye",
-          plus: "plus",
-          logout: "right-from-bracket",
-          mail: "envelope",
-          clock: "clock",
-          calendar: "calendar-days",
-          upload: "cloud-arrow-up",
-          lock: "lock",
-          warning: "triangle-exclamation",
-        } as Record<string, string>
-      )[this.name] || this.name
-    );
+    const key = (this.name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return Icon.icons[key] || key || "code";
   }
 }
 @Component({
@@ -413,7 +429,7 @@ export class ProjectCard {
 @Component({
   selector: "app-project-detail",
   standalone: true,
-  imports: [Modal, Gallery, Icon, RouterLink],
+  imports: [Modal, Gallery, Icon],
   template: `<app-modal
     [title]="project.title"
     [subtitle]="project.brief"
@@ -476,9 +492,11 @@ export class ProjectCard {
         @if (project.allowDemo) {
           <a
             class="button"
-            routerLink="/contact"
-            [queryParams]="{ mode: 'Demo', project: project.id }"
-            (click)="close.emit()"
+            [href]="
+              companyUrl + '/contact?mode=Demo&project=' + project.id
+            "
+            target="_blank"
+            rel="noopener noreferrer"
             >Request Demo</a
           >
         }
@@ -499,6 +517,9 @@ export class ProjectDetail {
   @Input({ required: true }) project!: Project;
   @Output() close = new EventEmitter<void>();
   content = inject(Content);
+  // The demo is booked on the company site, which owns the enquiry workflow; this profile host has
+  // no enquiry route of its own.
+  companyUrl = "https://synapsetechs.org";
   get groups() {
     return [...new Set(this.project.features.map((f) => f.group))];
   }

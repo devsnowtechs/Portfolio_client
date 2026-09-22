@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
+import { RouterLink, RouterOutlet } from "@angular/router";
 import { Icon, Socials } from "../shared/ui";
 import { Content } from "../core/content";
 @Component({
   selector: "app-profile-layout",
   standalone: true,
-  imports: [RouterOutlet, Icon, Socials],
+  imports: [RouterLink, RouterOutlet, Icon, Socials],
   template: `<a class="skip-link" href="#main">Skip to content</a>
     <header class="public-header">
-      <a class="brand" href="#main"
+      <a class="brand" routerLink="/"
         ><app-icon name="user" />{{ displayName }}.</a
       ><button
         class="mobile-toggle icon-button"
@@ -20,10 +20,19 @@ import { Content } from "../core/content";
       </button>
       <nav [class.open]="open">
         @for (l of links; track l.fragment) {
-          <a [href]="'#' + l.fragment" (click)="open = false">{{ l.label }}</a>
+          <a
+            [routerLink]="['/']"
+            [fragment]="l.fragment"
+            (click)="section(l.fragment)"
+            >{{ l.label }}</a
+          >
         }
       </nav>
-      <a class="button primary header-cta" [href]="companyUrl + '/contact'"
+      <a
+        class="button primary header-cta"
+        [href]="companyUrl + '/contact'"
+        target="_blank"
+        rel="noopener noreferrer"
         >Let's Talk <app-icon name="arrow"
       /></a>
     </header>
@@ -36,13 +45,24 @@ import { Content } from "../core/content";
       </div>
       <div>
         <h4>Profile</h4>
-        <a href="#about">About me</a>
-        <a href="#skills">Skills</a>
+        <a [routerLink]="['/']" [fragment]="'about'" (click)="section('about')"
+          >About me</a
+        >
+        <a [routerLink]="['/']" [fragment]="'skills'" (click)="section('skills')"
+          >Skills</a
+        >
       </div>
       <div>
         <h4>Work</h4>
-        <a href="#works">Portfolio works</a>
-        <a [href]="companyUrl + '/portfolio'">Company portfolio</a>
+        <a [routerLink]="['/']" [fragment]="'works'" (click)="section('works')"
+          >Portfolio works</a
+        >
+        <a
+          [href]="companyUrl + '/portfolio'"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Company portfolio</a
+        >
       </div>
       <div>
         <h4>Contact</h4>
@@ -50,12 +70,18 @@ import { Content } from "../core/content";
           <a [href]="'mailto:' + content.settings()!.publicEmail">Email</a>
         }
         @if (whatsApp) {
-          <a [href]="whatsApp">WhatsApp</a>
+          <a [href]="whatsApp" target="_blank" rel="noopener noreferrer"
+            >WhatsApp</a
+          >
         }
       </div>
       <div class="copyright">
         <span>© {{ year }} {{ displayName }}. Personal profile.</span>
-        <a class="admin-signin" [href]="companyUrl"
+        <a
+          class="admin-signin"
+          [href]="companyUrl"
+          target="_blank"
+          rel="noopener noreferrer"
           >{{ companyName }} <app-icon name="arrow"
         /></a>
       </div>
@@ -75,6 +101,19 @@ export class ProfileLayout implements OnInit {
     { fragment: "works", label: "Works" },
     { fragment: "contact", label: "Contact" },
   ];
+  // The router scrolls to the fragment once, but the sections are published from the API and may not
+  // be in the document yet (Education and Skills only render once entries exist), which is why the
+  // top-bar links appeared to do nothing. The jump is retried briefly until the anchor exists.
+  section(fragment: string) {
+    this.open = false;
+    let attempts = 0;
+    const jump = () => {
+      const target = document.getElementById(fragment);
+      if (target) target.scrollIntoView({ block: "start" });
+      else if (attempts++ < 20) setTimeout(jump, 100);
+    };
+    setTimeout(jump, 0);
+  }
   get displayName() {
     return this.content.profile()?.displayName || "My Profile";
   }

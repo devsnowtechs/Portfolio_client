@@ -1,0 +1,7 @@
+# Single-page application fallback.
+#
+# Every path on this host shows the profile because the Angular router matches "**", but the static
+# host answers an unknown path with its own 404 page instead of booting the application. This rule
+# (Cloudflare Pages, Netlify and compatible hosts) rewrites every request that does not match a real
+# file to index.html with a 200 status; real assets are still served from the bundle.
+/*    /index.html   200

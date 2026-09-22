@@ -52,8 +52,7 @@ import {
               [href]="whatsApp"
               target="_blank"
               rel="noopener noreferrer"
-              ><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-              WhatsApp {{ whatsAppLabel }}</a
+              ><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp</a
             >
           }
           @if (content.settings()?.publicEmail) {
@@ -193,7 +192,7 @@ import {
           >
             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
             <strong>WhatsApp</strong>
-            <span>{{ whatsAppLabel }}</span>
+            <span>Connect to my WhatsApp</span>
           </a>
         }
         @if (content.settings()?.publicEmail) {
@@ -246,22 +245,8 @@ export class ProfileHome extends PageState implements OnInit {
     const digits = this.digits();
     return digits ? "https://wa.me/" + digits : "";
   }
-  get whatsAppLabel() {
-    const digits = this.digits();
-    if (!digits) return "";
-    if (digits.length <= 10) return "+" + digits;
-    const tail = digits.slice(-10);
-    return (
-      "+" +
-      digits.slice(0, -10) +
-      " " +
-      tail.slice(0, 3) +
-      " " +
-      tail.slice(3, 6) +
-      " " +
-      tail.slice(6)
-    );
-  }
+  // The number itself is never printed: the page shows the word "WhatsApp" and links the visitor
+  // straight into the chat, so the contact detail is not exposed as plain text.
   private digits() {
     return (this.content.settings()?.whatsAppNumber || "").replace(/\D/g, "");
   }
