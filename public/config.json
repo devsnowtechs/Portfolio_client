@@ -1,0 +1,5 @@
+{
+  "apiBaseUrl": "https://synapsetechs-api.up.railway.app",
+  "toastDurationMs": 5500,
+  "analyticsEnabled": true
+}
