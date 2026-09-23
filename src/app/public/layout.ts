@@ -8,33 +8,35 @@ import { Content } from "../core/content";
   imports: [RouterLink, RouterOutlet, Icon, Socials],
   template: `<a class="skip-link" href="#main">Skip to content</a>
     <header class="public-header">
-      <a class="brand" routerLink="/"
-        ><app-icon name="user" />{{ displayName }}.</a
-      ><button
-        class="mobile-toggle icon-button"
-        (click)="open = !open"
-        [attr.aria-expanded]="open"
-        aria-label="Toggle navigation"
-      >
-        <app-icon name="menu" />
-      </button>
-      <nav [class.open]="open">
-        @for (l of links; track l.fragment) {
-          <a
-            [routerLink]="['/']"
-            [fragment]="l.fragment"
-            (click)="section(l.fragment)"
-            >{{ l.label }}</a
-          >
-        }
-      </nav>
-      <a
-        class="button primary header-cta"
-        [href]="companyUrl + '/contact'"
-        target="_blank"
-        rel="noopener noreferrer"
-        >Let's Talk <app-icon name="arrow"
-      /></a>
+      <div class="container header-inner">
+        <a class="brand" routerLink="/"
+          ><app-icon name="user" />{{ displayName }}.</a
+        ><button
+          class="mobile-toggle icon-button"
+          (click)="open = !open"
+          [attr.aria-expanded]="open"
+          aria-label="Toggle navigation"
+        >
+          <app-icon name="menu" />
+        </button>
+        <nav [class.open]="open">
+          @for (l of links; track l.fragment) {
+            <a
+              [routerLink]="['/']"
+              [fragment]="l.fragment"
+              (click)="section(l.fragment)"
+              >{{ l.label }}</a
+            >
+          }
+        </nav>
+        <a
+          class="button primary header-cta"
+          [href]="companyUrl + '/contact'"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Let's Talk <app-icon name="arrow"
+        /></a>
+      </div>
     </header>
     <main id="main"><router-outlet /></main>
     <footer class="public-footer">
@@ -48,7 +50,10 @@ import { Content } from "../core/content";
         <a [routerLink]="['/']" [fragment]="'about'" (click)="section('about')"
           >About me</a
         >
-        <a [routerLink]="['/']" [fragment]="'skills'" (click)="section('skills')"
+        <a
+          [routerLink]="['/']"
+          [fragment]="'skills'"
+          (click)="section('skills')"
           >Skills</a
         >
       </div>

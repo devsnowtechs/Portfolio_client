@@ -224,16 +224,22 @@ button:disabled {
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
+/* The bar is a static band that scrolls away with the page, lightly tinted with the same green wash the
+   company site uses, and its inner row keeps the width and gutters of .container so the brand, the menu and
+   the profile content below line up on one grid. */
 .public-header {
-  max-width: 1440px;
-  margin: auto;
+  background: linear-gradient(110deg, #eaf6ef, #effaf4);
+  border-bottom: 1px solid #dcece5;
+}
+.header-inner {
+  position: relative;
   min-height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 0.7rem 2.2rem;
-  border-bottom: 1px solid #edf4f1;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
 }
 .public-header nav {
   display: flex;
@@ -243,10 +249,14 @@ button:disabled {
   font-size: 0.9rem;
   color: #293d54;
   padding: 0.6rem 0;
+  /* The decorative line marks the link the pointer is on, and the current section keeps it permanently;
+     the default underline is suppressed because it sat too close to the letters. */
+  border-bottom: 2px solid transparent;
 }
-.public-header nav a.active {
-  border-bottom: 2px solid var(--green);
+.public-header nav a:hover {
+  border-bottom-color: var(--green);
   color: var(--green);
+  text-decoration: none;
 }
 .mobile-toggle {
   display: none;
@@ -933,7 +943,6 @@ button:disabled {
   font-size: 0.92rem;
   margin-top: 0.5rem;
 }
-
 
 .contact-grid {
   display: grid;
@@ -2324,8 +2333,9 @@ body:has(dialog[open]) {
   .sidebar nav a {
     font-size: 0.8rem;
   }
-  .public-header {
-    padding: 1rem 2rem;
+  .header-inner {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   .metric .eyebrow {
     font-size: 0.58rem;
@@ -2442,8 +2452,9 @@ body:has(dialog[open]) {
     padding-left: 1.2rem;
     padding-right: 1.2rem;
   }
-  .public-header {
-    padding: 0.8rem 1.2rem;
+  .header-inner {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
     min-height: 70px;
     flex-wrap: wrap;
     gap: 0.7rem;
@@ -3135,8 +3146,8 @@ body:has(dialog[open]) {
 .profile-section {
   margin: 2.4rem 0;
 }
-/* The header is sticky, so an in-page jump (the top-bar links and the footer links) must leave room
-   for it; without this the heading of the target section scrolls underneath the header. */
+/* The header is a static band, so a jump from the top bar or the footer only needs the target heading to
+   clear the viewport edge. */
 .profile-hero,
 .profile-section {
   scroll-margin-top: 6rem;
