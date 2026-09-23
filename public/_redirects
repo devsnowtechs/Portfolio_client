@@ -1,7 +1,13 @@
 # Single-page application fallback.
 #
 # Every path on this host shows the profile because the Angular router matches "**", but the static
-# host answers an unknown path with its own 404 page instead of booting the application. This rule
-# (Cloudflare Pages, Netlify and compatible hosts) rewrites every request that does not match a real
-# file to index.html with a 200 status; real assets are still served from the bundle.
+# host answers an unknown path with its own 404 instead of booting the application. This rule
+# (Cloudflare Pages, Cloudflare Workers with static assets and Netlify) rewrites every request that
+# does not match a real file to index.html with a 200 status; real assets are still served from the
+# bundle. A Worker that answers the request itself never applies these rules, so a bundle hosted on
+# Cloudflare Workers also needs assets.not_found_handling = single-page-application in wrangler.jsonc
+# (see README.md).
+#
+# Keep this file LF-only and free of a byte-order mark: the host parses it as plain text, and a
+# carriage return after the status code leaves it unreadable, which silently drops the rule.
 /*    /index.html   200

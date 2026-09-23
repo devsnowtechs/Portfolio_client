@@ -24,7 +24,7 @@ npm run build
 
 The static bundle is emitted to `dist/individual-profile/browser`. Deploy that folder to the host that serves the profile sub-domain:
 
-1. Add an SPA fallback that serves `index.html` for paths that are not real files; any path shows the profile, so a shared link never lands on a not-found page.
+1. The site is served by the Cloudflare Worker `portfolio-client` (`Workers & Pages -> portfolio-client`, custom domain `portfolio.synapsetechs.org`) and `wrangler.jsonc` in this repository is its configuration: `assets.directory` points at `dist/individual-profile/browser`, and `assets.not_found_handling = "single-page-application"` answers `/index.html` with a 200 for every navigation request that matches no file, so a hard refresh or an old link such as `/about` boots the profile instead of Cloudflare's empty-body 404. The Git-connected build (`npm run build`, then `npx wrangler deploy`) applies the file on the next push; verify with `curl -o /dev/null -s -w '%{http_code}\n' https://portfolio.synapsetechs.org/about`, which answers 200 once it is live. When the repository already carries a `wrangler.toml`, add the `not_found_handling` line there instead of shipping both files. `public/_redirects` still ships in the bundle as the second layer, and `.gitattributes` keeps it at Unix line endings, because a carriage return after the status code drops the rule.
 2. Serve `config.json` with `Cache-Control: no-store`; the remaining assets are content-hashed and can be cached permanently.
 3. Point the sub-domain (`portfolio.synapsetechs.com` or `portfolio.synapsetechs.org`) at that host. Both are already listed in the API's `Runtime:AllowedOrigins`, so cross-origin reads work without a code change.
 

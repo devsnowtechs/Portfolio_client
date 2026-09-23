@@ -1,0 +1,3 @@
+# The static host reads the SPA fallback as plain text, so it keeps Unix line endings in every
+# checkout: a CRLF rule line leaves the status code unreadable and silently disables the fallback.
+public/_redirects text eol=lf

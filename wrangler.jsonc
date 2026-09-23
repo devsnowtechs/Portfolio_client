@@ -1,0 +1,23 @@
+{
+  // Cloudflare Worker that serves this static bundle. The Git-connected build in
+  // Workers & Pages -> portfolio-client runs "npm run build" and then "npx wrangler deploy", which
+  // reads this file; the custom domain portfolio.synapsetechs.org is bound to the Worker.
+  //
+  // If this file already exists in the repository, add only the "not_found_handling" line to its
+  // assets block and keep the values already there. A repository that uses wrangler.toml keeps it in
+  // that file instead (never ship both).
+  //
+  // assets.not_found_handling: single-page-application answers /index.html with a 200 for every
+  // navigation request that matches no file, so an old or shared link such as /about boots the
+  // application. The static-asset default is "none", which returns Cloudflare's empty 404 for those
+  // paths, and public/_redirects only covers the requests Cloudflare parses that file for.
+  "name": "portfolio-client",
+  // Kept at the compatibility date the deployed Worker already runs with (shown on
+  // Workers & Pages -> portfolio-client -> Settings -> Runtime), so enabling the fallback changes
+  // nothing else about how requests are served.
+  "compatibility_date": "2026-09-17",
+  "assets": {
+    "directory": "./dist/individual-profile/browser",
+    "not_found_handling": "single-page-application"
+  }
+}
