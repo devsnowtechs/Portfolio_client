@@ -1,3 +1,4 @@
-# The static host reads the SPA fallback as plain text, so it keeps Unix line endings in every
-# checkout: a CRLF rule line leaves the status code unreadable and silently disables the fallback.
+# Cloudflare reads this file as plain text, so keep it at Unix line endings in every checkout: a CRLF
+# would leave a rule unreadable if one is ever needed again. It carries comments only on purpose; the SPA
+# fallback lives in wrangler.jsonc (see the file and README.md).
 public/_redirects text eol=lf

@@ -1,13 +1,14 @@
-# Single-page application fallback.
+# This file intentionally carries no redirect rules.
 #
-# Every path on this host shows the profile because the Angular router matches "**", but the static
-# host answers an unknown path with its own 404 instead of booting the application. This rule
-# (Cloudflare Pages, Cloudflare Workers with static assets and Netlify) rewrites every request that
-# does not match a real file to index.html with a 200 status; real assets are still served from the
-# bundle. A Worker that answers the request itself never applies these rules, so a bundle hosted on
-# Cloudflare Workers also needs assets.not_found_handling = single-page-application in wrangler.jsonc
-# (see README.md).
+# The profile Worker serves every navigation request from index.html through its own configuration, in
+# wrangler.jsonc:  "assets": { "not_found_handling": "single-page-application" }
+# so an old or shared link such as /about boots the profile instead of Cloudflare's empty-body 404.
 #
-# Keep this file LF-only and free of a byte-order mark: the host parses it as plain text, and a
-# carriage return after the status code leaves it unreadable, which silently drops the rule.
-/*    /index.html   200
+# The rule that used to sit here, "/*    /index.html   200", is rejected by Cloudflare Workers while the
+# assets are uploaded:
+#   Invalid _redirects configuration: Infinite loop detected in this rule. This would cause a redirect
+#   to strip `.html` or `/index` and end up triggering this rule again. [code: 100324]
+# The rewrite to /index.html normalises to / and matches "/*" again, so the build fails. Cloudflare Pages
+# accepts the rule, this Worker does not, and the wrangler.jsonc setting replaces it.
+#
+# Keep the file rule-free, and delete it if it is ever in the way: nothing reads it any more.
